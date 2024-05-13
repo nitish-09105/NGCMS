@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
 import pandas as pd
 from flask_cors import CORS
-import requests
 app = Flask(__name__)
 CORS(app)
 # Loading Dataset   
