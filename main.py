@@ -1,9 +1,10 @@
-from flask import Flask, jsonify,response
+from flask import Flask, jsonify
 import pandas as pd
+from flask_cors import CORS
 import requests
 app = Flask(__name__)
-
-# Loading Dataset
+CORS(app)
+# Loading Dataset   
 df = pd.read_csv('data.csv')
 
 
@@ -12,7 +13,7 @@ df = pd.read_csv('data.csv')
 def get_data():
     # Convert the DataFrame to a dictionary and jsonify the result
     data_dict = df.to_dict(orient='records')
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     return jsonify(data_dict)
 
 
@@ -31,7 +32,7 @@ def state_and_districts():
         }
         json_data.append(state_item)
         state_id += 1  
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     return jsonify(json_data)
 
 
@@ -39,7 +40,7 @@ def state_and_districts():
 # Fetching the total Population by state
 @app.route('/api/population/<state>', methods=['GET'])
 def population_by_state(state):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     state_data = df[df['State name'] == state]
     if not state_data.empty:
         district_populations = state_data.set_index('District name')['Population'].to_dict()
@@ -59,7 +60,7 @@ def population_by_state(state):
 # Fetching the total gender Population by state
 @app.route('/api/population/<state>/gender', methods=['GET'])
 def gender_by_state(state):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     state_data = df[df['State name'] == state]
     if not state_data.empty:
         response = {state: {}}
@@ -83,7 +84,7 @@ def gender_by_state(state):
 # Fetching the total gender Population by state
 @app.route('/api/population/<state>/workers', methods=['GET'])
 def workers_by_state(state):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     state_data = df[df['State name'] == state]
     if not state_data.empty:
         response = {state: {}}
@@ -109,7 +110,7 @@ def workers_by_state(state):
 # Fetching the total literate workers by state
 @app.route('/api/population/<state>/literate', methods=['GET'])
 def literate_workers_by_state(state):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     state_data = df[df['State name'] == state]
     if not state_data.empty:
         response = {state: {}}
@@ -135,7 +136,7 @@ def literate_workers_by_state(state):
 # Fetching the population of various religious groups by state
 @app.route('/api/population/<state>/religious-groups', methods=['GET'])
 def religious_groups_by_state(state):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     state_data = df[df['State name'] == state]
     if not state_data.empty:
         response = {state: {}}
@@ -168,7 +169,7 @@ def religious_groups_by_state(state):
 # Fetching the literacy percent by age group  by state
 @app.route('/api/literate_percentage_by_age_group/<age_group>', methods=['GET'])
 def get_literate_percentage_by_age_group(age_group):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     # Filter the dataset by the specified age group 
     filtered_data = df[df['Age_Group_' + age_group] == 1]
     # Calculate total population
@@ -184,7 +185,7 @@ def get_literate_percentage_by_age_group(age_group):
 # Fetching the religious minority percentage by district
 @app.route('/api/religious_minority_percentage_by_district/<district>', methods=['GET'])
 def get_religious_minority_percentage_by_district(district):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     # Filter the dataset by the specified district and calculate the percentage of religious minorities
     filtered_data = df[df['District name'] == district]
     # Calculate total population
@@ -200,7 +201,7 @@ def get_religious_minority_percentage_by_district(district):
 # Fetching the household ownership ratio by state
 @app.route('/api/household_ownership_ratio_by_state/<state>', methods=['GET'])
 def get_household_ownership_ratio_by_state(state):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     # Filter the dataset by the specified state and calculate the owned and rented household ratios
     filtered_data = df[df['State name'] == state]
     # Calculate owned household
@@ -216,7 +217,7 @@ def get_household_ownership_ratio_by_state(state):
 # Fetching the power parity percentage by district
 @app.route('/api/power_parity_percentage_by_district/<district>', methods=['GET'])
 def get_power_parity_percentage_by_district(district):
-    response.headers.add('Access-Control-Allow-Origin', '*')
+     
     # Filter the dataset by the specified district and calculate the power parity percentage
     filtered_data = df[df['District name'] == district]
     # Calculate total power parity
