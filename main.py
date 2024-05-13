@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 import pandas as pd
 from flask_cors import CORS
+
 app = Flask(__name__)
 CORS(app)
 # Loading Dataset   
@@ -18,7 +19,7 @@ def get_data():
 
 
 # Fetching the total state and their districts
-state_districts = df.groupby('State name')['District name'].apply(list).to_dict()
+state_districts = df.groupby('State_name')['District_name'].apply(list).to_dict()
 @app.route('/api/state_and_districts', methods=['GET'])
 def state_and_districts():
     json_data = []
@@ -54,6 +55,18 @@ def population_by_state(state):
         
         return jsonify(error_response), 404
     
+
+
+# Fetching the male female ratio by state
+@app.route('/api/male_female_ratio_by_state/<state>', methods=['GET'])
+def get_male_female_ratio_by_state(state):
+    # Filter the dataset by the specified state and calculate the male-female ratio
+    filtered_data = df[df['State name'] == state]
+    # Calculate total males and females
+    total_males = filtered_data['Male'].sum()
+    total_females = filtered_data['Female'].sum()
+    male_female_ratio = total_males / total_females if total_females != 0 else None
+    return jsonify({'male_female_ratio': male_female_ratio})
 
 
 # Fetching the total gender Population by state
