@@ -19,7 +19,7 @@ def get_data():
 
 
 # Fetching the total state and their districts
-state_districts = df.groupby('State_name')['District_name'].apply(list).to_dict()
+state_districts = df.groupby('State name')['District name'].apply(list).to_dict()
 @app.route('/api/state_and_districts', methods=['GET'])
 def state_and_districts():
     json_data = []
