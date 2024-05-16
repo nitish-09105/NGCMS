@@ -1,1 +1,1 @@
-api/population/<state>/gender
+household_ownership_percentage_by_district
