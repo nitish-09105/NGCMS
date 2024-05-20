@@ -181,7 +181,82 @@ def get_household_ownership_percentage_by_district(district):
         return jsonify(error_response), 404
 
 
-
+# 9 Distribution of Education Levels in state
+@app.route('/api/education_distribution_by_state/<state>', methods=['GET'])
+def get_education_distribution(state):
+    # Filter the dataset by the specified state
+    filtered_data = df[df['State name'] == state]
+    if not filtered_data.empty:
+        # Calculate total Primary_Education
+        primary_education = filtered_data['Primary_Education'].sum()
+        # Calculate total Secondary_Education
+        secondary_education = filtered_data['Secondary_Education'].sum()
+        # Calculate total Higher_Education
+        higher_education = filtered_data['Higher_Education'].sum()
+        # Calculate total Graduate_Education
+        graduate_education = filtered_data['Graduate_Education'].sum()
+        # Calculate total Education
+        total_education = secondary_education + higher_education+graduate_education + primary_education
+        # calculate education percentages
+        primary_Education_percentage = (primary_education / total_education) * 100 if total_education != 0 else 0
+        Secondary_Education_percentage = (secondary_education / total_education) * 100 if total_education != 0 else 0
+        Higher_education_percentage = (higher_education / total_education) * 100 if total_education != 0 else 0
+        Graduate_education_percentage = (graduate_education / total_education) * 100 if total_education != 0 else 0
+        # Construct response JSON
+        response={
+            state:{
+            "primary_Education_percentage": primary_Education_percentage,
+            "Secondary_Education_percentage": Secondary_Education_percentage,
+            "Higher_education_percentage": Higher_education_percentage,
+            "Graduate_education_percentage": Graduate_education_percentage
+        }
+        }
+        # Return response with status code 200 (OK)
+        return jsonify(response), 200
+    else:
+        # Return error response with status code 404 (Not Found)
+        error_response = {
+            "error": "State not found"
+        }
+        return jsonify(error_response), 404
+    
+@app.route('/api/education_distribution_by_district/<district>', methods=['GET'])
+def get_education_distribution_by_district(district):
+    # Filter the dataset by the specified district
+    filtered_data = df[df['District name'] == district]
+    if not filtered_data.empty:
+        # Calculate total Primary_Education
+        primary_education = filtered_data['Primary_Education'].sum()
+        # Calculate total Secondary_Education
+        secondary_education = filtered_data['Secondary_Education'].sum()
+        # Calculate total Higher_Education
+        higher_education = filtered_data['Higher_Education'].sum()
+        # Calculate total Graduate_Education
+        graduate_education = filtered_data['Graduate_Education'].sum()
+        # Calculate total Education
+        total_education = secondary_education + higher_education + graduate_education + primary_education
+        # calculate education percentages
+        primary_education_percentage = (primary_education / total_education) * 100 if total_education != 0 else 0
+        secondary_education_percentage = (secondary_education / total_education) * 100 if total_education != 0 else 0
+        higher_education_percentage = (higher_education / total_education) * 100 if total_education != 0 else 0
+        graduate_education_percentage = (graduate_education / total_education) * 100 if total_education != 0 else 0
+        # Construct response JSON
+        response = {
+            district: {
+                "primary_education_percentage": primary_education_percentage,
+                "secondary_education_percentage": secondary_education_percentage,
+                "higher_education_percentage": higher_education_percentage,
+                "graduate_education_percentage": graduate_education_percentage
+            }
+        }
+        # Return response with status code 200 (OK)
+        return jsonify(response), 200
+    else:
+        # Return error response with status code 404 (Not Found)
+        error_response = {
+            "error": "district not found"
+        }
+        return jsonify(error_response), 404
 
 # Fetching the total gender Population by state
 @app.route('/api/population/<state>/gender', methods=['GET'])
