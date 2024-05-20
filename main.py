@@ -97,9 +97,41 @@ def get_male_female_percentage_by_district(district):
     return jsonify(response), 200
 
 
+# 6 Fetching the population of various religious groups by state
+@app.route('/api/population/religious-groups_by_state/<state>', methods=['GET'])
+def religious_groups_by_state(state):
+    # Filter the dataset by the specified state
+    state_data = df[df['State name'] == state]
+    # Check if state data is found
+    if not state_data.empty:
+        # Calculate total population of the state
+        total_population = state_data['Population'].sum()
+        # Ensure columns used in calculations are numeric
+        numeric_columns = ['Hindus', 'Muslims', 'Christians', 'Sikhs', 'Buddhists', 'Jains']
+        state_data[numeric_columns] = state_data[numeric_columns].apply(pd.to_numeric, errors='coerce')
+        # Calculate percentages of each religious group
+        religious_percentages = {}
+        for column in numeric_columns:
+            percentage = (state_data[column].sum() / total_population) * 100
+            religious_percentages[column] = percentage
+        # Construct response JSON
+        response = {
+            state:{
+            "religious_groups": religious_percentages
+        }
+        }
+        # Return response with status code 200 (OK)
+        return jsonify(response), 200
+    else:
+        # Return error response with status code 404 (Not Found)
+        error_response = {
+            "error": "State not found"
+        }
+        return jsonify(error_response), 404
+    
 
-# 6 Fetching the population of various religious groups by district
-@app.route('/api/population/religious-groups/<district>', methods=['GET'])
+# 7 Fetching the population of various religious groups by district
+@app.route('/api/population/religious-groups_by_district/<district>', methods=['GET'])
 def religious_groups_by_district(district):
     # Filter the dataset by the specified district
     district_data = df[df['District name'] == district]
@@ -133,8 +165,9 @@ def religious_groups_by_district(district):
             "error": "District not found"
         }
         return jsonify(error_response), 404
+    
 
-# 7 Fetching the household ownership ratio by state
+# 8 Fetching the household ownership ratio by state
 @app.route('/api/household_ownership_ratio_by_state/<state>', methods=['GET'])
 def get_household_ownership_ratio_by_state(state):
     # Filter the dataset by the specified state and calculate the owned and rented household ratios
@@ -148,7 +181,7 @@ def get_household_ownership_ratio_by_state(state):
     return jsonify({'ownership_ratio': ownership_ratio})
 
 
-# 8 Fetching the household ownership percentage by district
+# 9 Fetching the household ownership percentage by district
 @app.route('/api/household_ownership_percentage_by_district/<district>', methods=['GET'])
 def get_household_ownership_percentage_by_district(district):
     # Filter the dataset by the specified district
@@ -181,7 +214,7 @@ def get_household_ownership_percentage_by_district(district):
         return jsonify(error_response), 404
 
 
-# 9 Distribution of Education Levels in state
+# 10 Distribution of Education Levels in state
 @app.route('/api/education_distribution_by_state/<state>', methods=['GET'])
 def get_education_distribution(state):
     # Filter the dataset by the specified state
@@ -220,6 +253,7 @@ def get_education_distribution(state):
         }
         return jsonify(error_response), 404
     
+# 11 Distribution of Education Levels in district    
 @app.route('/api/education_distribution_by_district/<district>', methods=['GET'])
 def get_education_distribution_by_district(district):
     # Filter the dataset by the specified district
