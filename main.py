@@ -253,6 +253,7 @@ def get_education_distribution(state):
         }
         return jsonify(error_response), 404
     
+    
 # 11 Distribution of Education Levels in district    
 @app.route('/api/education_distribution_by_district/<district>', methods=['GET'])
 def get_education_distribution_by_district(district):
